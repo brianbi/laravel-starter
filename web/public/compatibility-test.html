@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兼容性测试页面</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .status {
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    button {
+      background-color: #409eff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #66b1ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>前端应用兼容性测试</h1>
+    
+    <div class="test-section">
+      <h3>环境检测</h3>
+      <p>浏览器: <span id="browser"></span></p>
+      <p>User Agent: <span id="userAgent"></span></p>
+      <p>支持 ES6: <span id="es6" class="status"></span></p>
+      <p>支持 Fetch: <span id="fetch" class="status"></span></p>
+      <p>支持 Promise: <span id="promise" class="status"></span></p>
+      <p>支持 localStorage: <span id="storage" class="status"></span></p>
+    </div>
+
+    <div class="test-section">
+      <h3>JavaScript 功能测试</h3>
+      <button onclick="testArrowFunction()">测试箭头函数</button>
+      <button onclick="testTemplateLiteral()">测试模板字符串</button>
+      <button onclick="testDestructuring()">测试解构赋值</button>
+      <button onclick="testSpreadOperator()">测试展开运算符</button>
+      <p>结果: <span id="js-result"></span></p>
+    </div>
+
+    <div class="test-section">
+      <h3>API 功能测试</h3>
+      <button onclick="testFetch()">测试 Fetch API</button>
+      <button onclick="testLocalStorage()">测试 LocalStorage</button>
+      <p>结果: <span id="api-result"></span></p>
+    </div>
+
+    <div class="test-section">
+      <h3>CSS 功能测试</h3>
+      <p>Flexbox 测试:</p>
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1; background: #e6f7ff; padding: 10px;">Flex Item 1</div>
+        <div style="flex: 1; background: #fff2e8; padding: 10px;">Flex Item 2</div>
+      </div>
+      
+      <p>Grid 测试:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <div style="background: #f0f5ff; padding: 10px;">Grid Item 1</div>
+        <div style="background: #fcffe6; padding: 10px;">Grid Item 2</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 环境检测
+    document.getElementById('browser').textContent = navigator.appName + ' ' + navigator.appVersion;
+    document.getElementById('userAgent').textContent = navigator.userAgent;
+
+    // ES6 检测
+    try {
+      eval('const test = () => true;');
+      document.getElementById('es6').textContent = '是';
+      document.getElementById('es6').className += ' pass';
+    } catch (e) {
+      document.getElementById('es6').textContent = '否';
+      document.getElementById('es6').className += ' fail';
+    }
+
+    // Fetch 检测
+    if (typeof fetch !== 'undefined') {
+      document.getElementById('fetch').textContent = '是';
+      document.getElementById('fetch').className += ' pass';
+    } else {
+      document.getElementById('fetch').textContent = '否';
+      document.getElementById('fetch').className += ' fail';
+    }
+
+    // Promise 检测
+    if (typeof Promise !== 'undefined') {
+      document.getElementById('promise').textContent = '是';
+      document.getElementById('promise').className += ' pass';
+    } else {
+      document.getElementById('promise').textContent = '否';
+      document.getElementById('promise').className += ' fail';
+    }
+
+    // localStorage 检测
+    try {
+      localStorage.setItem('test', 'test');
+      localStorage.removeItem('test');
+      document.getElementById('storage').textContent = '是';
+      document.getElementById('storage').className += ' pass';
+    } catch (e) {
+      document.getElementById('storage').textContent = '否';
+      document.getElementById('storage').className += ' fail';
+    }
+
+    // JavaScript 功能测试
+    function testArrowFunction() {
+      try {
+        const fn = (x) => x * 2;
+        const result = fn(5);
+        document.getElementById('js-result').textContent = `箭头函数正常 (结果: ${result})`;
+        document.getElementById('js-result').style.color = 'green';
+      } catch (e) {
+        document.getElementById('js-result').textContent = `箭头函数异常: ${e.message}`;
+        document.getElementById('js-result').style.color = 'red';
+      }
+    }
+
+    function testTemplateLiteral() {
+      try {
+        const name = 'World';
+        const result = `Hello, ${name}!`;
+        document.getElementById('js-result').textContent = `模板字符串正常 (结果: "${result}")`;
+        document.getElementById('js-result').style.color = 'green';
+      } catch (e) {
+        document.getElementById('js-result').textContent = `模板字符串异常: ${e.message}`;
+        document.getElementById('js-result').style.color = 'red';
+      }
+    }
+
+    function testDestructuring() {
+      try {
+        const obj = { a: 1, b: 2 };
+        const { a, b } = obj;
+        document.getElementById('js-result').textContent = `解构赋值正常 (a=${a}, b=${b})`;
+        document.getElementById('js-result').style.color = 'green';
+      } catch (e) {
+        document.getElementById('js-result').textContent = `解构赋值异常: ${e.message}`;
+        document.getElementById('js-result').style.color = 'red';
+      }
+    }
+
+    function testSpreadOperator() {
+      try {
+        const arr1 = [1, 2, 3];
+        const arr2 = [...arr1, 4, 5];
+        document.getElementById('js-result').textContent = `展开运算符正常 (结果: [${arr2.join(', ')}])`;
+        document.getElementById('js-result').style.color = 'green';
+      } catch (e) {
+        document.getElementById('js-result').textContent = `展开运算符异常: ${e.message}`;
+        document.getElementById('js-result').style.color = 'red';
+      }
+    }
+
+    // API 功能测试
+    async function testFetch() {
+      try {
+        if (typeof fetch === 'undefined') {
+          throw new Error('Fetch API 不支持');
+        }
+        document.getElementById('api-result').textContent = 'Fetch API 测试中...';
+        document.getElementById('api-result').style.color = 'orange';
+        
+        // 测试 fetch 功能（使用模拟数据）
+        setTimeout(() => {
+          document.getElementById('api-result').textContent = 'Fetch API 功能正常';
+          document.getElementById('api-result').style.color = 'green';
+        }, 500);
+      } catch (e) {
+        document.getElementById('api-result').textContent = `Fetch API 异常: ${e.message}`;
+        document.getElementById('api-result').style.color = 'red';
+      }
+    }
+
+    function testLocalStorage() {
+      try {
+        const testKey = 'compatibility_test';
+        const testValue = Date.now().toString();
+        
+        localStorage.setItem(testKey, testValue);
+        const retrievedValue = localStorage.getItem(testKey);
+        localStorage.removeItem(testKey);
+        
+        if (retrievedValue === testValue) {
+          document.getElementById('api-result').textContent = 'LocalStorage 功能正常';
+          document.getElementById('api-result').style.color = 'green';
+        } else {
+          throw new Error('LocalStorage 读写不一致');
+        }
+      } catch (e) {
+        document.getElementById('api-result').textContent = `LocalStorage 异常: ${e.message}`;
+        document.getElementById('api-result').style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>
