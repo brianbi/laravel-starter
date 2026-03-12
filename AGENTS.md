@@ -248,21 +248,67 @@ Route::prefix('admin')->name('admin.')->group(function () {
 - **Location**: `tests/Unit/` and `tests/Feature/`
 - **Naming**: `*Test.php` suffix
 - **Methods**: `test_*` prefix or `test*()` pattern
-- **Base**: Extend `Tests\TestCase`
+- **Base**: Extend `Tests\TestCase` for feature tests, `PHPUnit\Framework\TestCase` for pure unit tests
 
 ```php
-class UserControllerTest extends TestCase
+// Unit test example (business logic)
+class FormDefinitionTest extends TestCase
 {
-    public function test_user_can_be_created(): void
-    {
-        $response = $this->postJson('/api/admin/auth/login', [
-            'username' => 'admin',
-            'password' => 'password',
-        ]);
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
+    public function test_generates_required_validation_rules(): void
+    {
+        $form = FormDefinition::factory()->create([...]);
+        $result = $form->someMethod();
+        $this->assertXxx($result);
     }
 }
+
+// Feature test example (API endpoints)
+class UserControllerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected User $user;
+    protected string $token;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->token = auth('api')->login($this->user);
+    }
+
+    protected function authHeaders(): array
+    {
+        return ['Authorization' => 'Bearer ' . $this->token];
+    }
+
+    public function test_user_can_be_created(): void
+    {
+        $response = $this->postJson('/api/admin/users', array_merge(
+            $this->authHeaders(),
+            ['username' => 'testuser', 'password' => 'password']
+        ));
+        $response->assertStatus(201);
+    }
+}
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+composer test
+
+# Run specific test class
+php artisan test --filter=UserTest
+
+# Run specific test method
+php artisan test --filter=test_user_can_login
+
+# Run with coverage
+php artisan test --coverage
 ```
 
 ---
@@ -280,6 +326,7 @@ class UserControllerTest extends TestCase
 | `config/` | Configuration files |
 | `tests/Unit/` | Unit tests |
 | `tests/Feature/` | Feature/integration tests |
+| `database/factories/` | Model factories with states |
 
 ---
 
